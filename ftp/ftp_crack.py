@@ -1,4 +1,5 @@
 #!/usr/bin/python
+#coding=utf-8
 ###########################################
 #author：chinasun021
 #date:2015-9-23
@@ -24,6 +25,7 @@ class FtpPasswordScan():
 		self.data = []
 		self.flag = 0
 		self.pwd_num = 0
+		self.pos=0
 		self.weakuser = ''
 		self.weakpwd = ''
 
@@ -64,7 +66,13 @@ class FtpPasswordScan():
 		f.close()
 		f=file('ftp_pwd.txt','r')
 		pwd_num=0
-		f.seek((tiao+self.pwd_num)*7)
+		if self.pos==0:
+			tiao_num=0
+			while(tiao_num<tiao):
+				line=f.readline()
+				tiao_num+=1
+		else:
+			f.seek(self.pos)
 		while (pwd_num<onetime_num):
 			line=f.readline()
 			if len(line.strip()) == 0:
@@ -74,6 +82,7 @@ class FtpPasswordScan():
 			self.password_list.append(line.strip())
 			self.pwd_num += 1
 			pwd_num += 1
+			self.pos=f.tell()
 		f.close()
 		temp_num=0
 		temp=[]
