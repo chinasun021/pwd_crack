@@ -12,14 +12,14 @@ Linux系统（建议选用ubuntu）
 
 <code>
 	apt-get install python-setuptools
-	
+
 	easy_install threadpool
 </code>
-
 安装expect软件：
 
 <code>apt-get install expect</code>
-
+###使用方法：
+./cert_crack.py cert filename
 ##ftp暴力破解
 ###需要安装的软件
 Linux系统（建议选用ubuntu）
@@ -31,7 +31,8 @@ Linux系统（建议选用ubuntu）
 
 	easy_install threadpool
 </code>
-
+###使用方法：
+./ftp_crack.py ip (port(default 21))
 ##ssh暴力破解
 Linux系统（建议选用ubuntu）
 
@@ -41,9 +42,11 @@ Linux系统（建议选用ubuntu）
 	apt-get install python-setuptools
 
 	easy_install threadpool
-<
+
 	easy_install paramiko
 </code>
+###使用方法：
+./ssh_crack.py ip (port(default 22))
 
 ##mysql暴力破解
 Linux系统（建议选用ubuntu）
@@ -57,6 +60,8 @@ Linux系统（建议选用ubuntu）
 
 	apt-get install python-mysqldb
 </code>
+###使用方法：
+./mysql_crack.py ip (port(default 3306))
 
 ##windows暴力破解
 Linux系统（建议选用ubuntu）
@@ -70,3 +75,5 @@ Linux系统（建议选用ubuntu）
 
 	easy_install impacket
 </code>
+###使用方法：
+./win_crack.py ip (port(default 3389))
