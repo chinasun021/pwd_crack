@@ -1,3 +1,4 @@
+
 # pwd_crack
 cert、ftp、ssh、mysql、windows 暴力破解
 
@@ -11,7 +12,6 @@ Linux系统（建议选用ubuntu）
 
 <code>
 	apt-get install python-setuptools
-
 	easy_install threadpool
 </code>
 
@@ -27,7 +27,6 @@ Linux系统（建议选用ubuntu）
 
 <code>
 	apt-get install python-setuptools
-
 	easy_install threadpool
 </code>
 
@@ -38,9 +37,7 @@ Linux系统（建议选用ubuntu）
 
 <code>
 	apt-get install python-setuptools
-
 	easy_install threadpool
-
 	easy_install paramiko
 </code>
 
@@ -51,9 +48,7 @@ Linux系统（建议选用ubuntu）
 
 <code>
 	apt-get install python-setuptools
-
 	easy_install threadpool
-
 	apt-get install python-mysqldb
 </code>
 
@@ -64,8 +59,6 @@ Linux系统（建议选用ubuntu）
 
 <code>
 	apt-get install python-setuptools
-
 	easy_install threadpool
-
 	easy_install impacket
 </code>
