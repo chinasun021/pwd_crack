@@ -5,6 +5,7 @@ import time,random
 import sys
 import socket
 import pdb
+poolsize=50
 class WinPasswordScan():
 	def __init__(self,ip,port):
 		self.ip = ip
@@ -24,7 +25,7 @@ class WinPasswordScan():
 		try:
 			client = smb.SMB('*SMBSERVER',ip)
 			client.login(username,password)
-		except :
+		except Exception:
 			return False
 		self.weakuser = username
 		self.weakpwd = password
@@ -51,18 +52,29 @@ class WinPasswordScan():
 			for j in self.password_list:
 				self.data.append({'ip':self.ip,'port':self.port,'username':i,'password':j})
 
-def passwordScan(ip,port=21):
+def passwordScan(ip,port=3389):
+	start=time.time()
+	sk = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	sk.settimeout(5)
+	try:
+		sk.connect((ip,port))
+	except Exception:
+		print 'Server port',port,' not connect!'
+		return -1
+	sk.close()
 	p=WinPasswordScan(ip,port)
 	p.getscanlist()
-	poolsize=50
 	pool = threadpool.ThreadPool(poolsize) 
 	requests = threadpool.makeRequests(p.passwordCorrect,p.data, None) 
 	[pool.putRequest(req) for req in requests] 
 	pool.wait() 
+	pool.dismissWorkers(poolsize,do_join=True)
 	if p.flag == 0:
 		print 'no weak password!'
 	else:
 		print 'exist weak password!', p.weakuser, ':', p.weakpwd
+	end=time.time()
+	print 'total time elapsed:', (end - start), 'seconds'
 
 if __name__ == "__main__":
 	socket.setdefaulttimeout(10)
@@ -71,4 +83,4 @@ if __name__ == "__main__":
 	elif len(sys.argv)==3:
 		passwordScan(sys.argv[1],sys.argv[2])
 	else:
-		print 'usage: ', sys.argv[0], ' ip (port(default 21))'
+		print 'usage: ', sys.argv[0], ' ip (port(default 3389))'

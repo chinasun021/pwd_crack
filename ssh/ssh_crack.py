@@ -7,6 +7,7 @@ import sys
 import socket
 import pdb
 from time import clock as now
+poolsize=10
 class SSHPasswordScan():
 	def __init__(self,ip,port):
 		self.ip = ip
@@ -60,21 +61,31 @@ class SSHPasswordScan():
 				self.data.append({'ip':self.ip,'port':self.port,'username':i,'password':j})
 
 def passwordScan(ip,port=22):
+	start=time.time()
+	sk = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	sk.settimeout(5)
+	try:
+		sk.connect((ip,port))
+	except Exception:
+		print 'Server port',port,' not connect!'
+		return -1
+	sk.close()
 	print 'ssh check user and pass:'
 	p=SSHPasswordScan(ip,port)
 	p.getscanlist()
-	poolsize=10
 	pool = threadpool.ThreadPool(poolsize) 
 	requests = threadpool.makeRequests(p.passwordCorrect,p.data, None) 
 	[pool.putRequest(req) for req in requests] 
-	pool.wait() 
+	pool.wait()
+	pool.dismissWorkers(poolsize,do_join=True)
 	if p.flag == 0:
 		print 'no weak password!'
 	else:
 		print 'exist weak password!', p.weakuser, ':', p.weakpwd
+	end=time.time()
+	print 'total time elapsed:', (end - start), 'seconds'
 
 if __name__ == "__main__":
-	start =now()
 	socket.setdefaulttimeout(10)
 	if len(sys.argv)==2:
 		passwordScan(sys.argv[1])
@@ -82,6 +93,3 @@ if __name__ == "__main__":
 		passwordScan(sys.argv[1],sys.argv[2])
 	else:
 		print 'usage: ', sys.argv[0], ' ip (port(default 22))'
-	finish =now()
-	time_use=finish - start
-	print 'use time',time_use,' sec'

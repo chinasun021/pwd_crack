@@ -5,6 +5,7 @@ import MySQLdb
 import sys
 import socket
 import pdb
+poolsize=50
 class MysqlPasswordScan():
 	def __init__(self,ip,port):
 		self.ip = ip
@@ -53,6 +54,15 @@ class MysqlPasswordScan():
 				self.data.append({'ip':self.ip,'port':self.port,'username':i,'password':j})
 
 def passwordScan(ip,port=3306):
+	start=time.time()
+	sk = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	sk.settimeout(5)
+	try:
+		sk.connect((ip,port))
+	except Exception:
+		print 'Server port',port,' not connect!'
+		return -1
+	sk.close()
 	p=MysqlPasswordScan(ip,port)
 	try:
 		MySQLdb.connect (host = ip, port = port, user = "root", passwd = "")
@@ -60,20 +70,21 @@ def passwordScan(ip,port=3306):
 		p.weakuser="root"
 		p.weakpwd=""
 	except Exception, e:
-		#pdb.set_trace()
 		if str(e).find('is not allowed to connect to this MySQL server')!=-1:
 			print 'host is not allowed to connect to this MySQL server'
 			return 2
 	p.getscanlist()
-	poolsize=50
 	pool = threadpool.ThreadPool(poolsize) 
 	requests = threadpool.makeRequests(p.passwordCorrect,p.data, None) 
 	[pool.putRequest(req) for req in requests] 
-	pool.wait() 
+	pool.wait()
+	pool.dismissWorkers(poolsize,do_join=True)
 	if p.flag == 0:
 		print 'no weak password!'
 	else:
 		print 'exist weak password!', p.weakuser, ':', p.weakpwd
+	end=time.time()
+	print 'total time elapsed:', (end - start), 'seconds'
 
 if __name__ == "__main__":
 	socket.setdefaulttimeout(10)

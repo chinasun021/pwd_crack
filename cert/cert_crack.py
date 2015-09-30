@@ -84,7 +84,6 @@ def passwordScan(cert):
 if __name__ == '__main__':
 	if len(sys.argv) ==2:
 		if os.path.exists(sys.argv[1]):
-			print 'exists'
 			passwordScan(sys.argv[1])
 		else:
 			print sys.argv[1],'not exists!'

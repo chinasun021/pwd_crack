@@ -96,6 +96,16 @@ class FtpPasswordScan():
 					temp=[]
 
 def passwordScan(ip,port=21):
+	start=time.time()
+	#check port is opened
+	sk = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	sk.settimeout(5)
+	try:
+		sk.connect((ip,port))
+	except Exception:
+		print 'Server port',port,' not connect!'
+		return -1
+	sk.close()
 	pwd_count=-1
 	for pwd_count,line in enumerate(open('ftp_pwd.txt','rU')):
 		pwd_count +=1
@@ -109,19 +119,21 @@ def passwordScan(ip,port=21):
 		[pool.putRequest(req) for req in requests] 
 		pool.wait() 
 		pool.dismissWorkers(poolsize,do_join=True)
+		print '************************************************************'
 		if p.flag != 0:
 			print 'exist weak password!', p.weakuser, ':', p.weakpwd
 			break
 		print str(p.pwd_num) + "passwords are checkd!"
 		thread_end=time.time()
 		print 'total time elapsed:', (thread_end - thread_start), 'seconds'
+		print '************************************************************'
 	if p.flag ==0:
 		print "no weak password!"
+	end=time.time()
+	print 'total time elapsed:', (end - start), 'seconds'
 
 if __name__ == "__main__":
 	socket.setdefaulttimeout(10)
-	start=time.time()
-	print "start time:" + str(start)
 	socket.setdefaulttimeout(10)
 	if len(sys.argv)==2:
 		passwordScan(sys.argv[1])
@@ -129,6 +141,4 @@ if __name__ == "__main__":
 		passwordScan(sys.argv[1],sys.argv[2])
 	else:
 		print 'usage: ', sys.argv[0], ' ip (port(default 21))'
-	end=time.time()
-	print "end time:" + str(end)
-	print 'total time elapsed:', (end - start), 'seconds'
+	
